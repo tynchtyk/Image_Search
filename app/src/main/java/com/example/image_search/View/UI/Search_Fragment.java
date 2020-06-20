@@ -2,13 +2,27 @@ package com.example.image_search.View.UI;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.image_search.R;
+import com.example.image_search.Service.Model.ImageDescription;
+import com.example.image_search.Service.Model.Response_Data;
+import com.example.image_search.View.Adapters.SearchImageListAdapter;
+import com.example.image_search.ViewModel.SearchImagesViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +40,10 @@ public class Search_Fragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    ArrayList<ImageDescription> imagesArrayList = new ArrayList<>();
+    SearchImageListAdapter imagesAdapter;
+    RecyclerView rvHeadline;
+    SearchImagesViewModel imagesViewModel;
     public Search_Fragment() {
         // Required empty public constructor
     }
@@ -61,6 +79,31 @@ public class Search_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View rootview = inflater.inflate(R.layout.fragment_search, container, false);
+
+
+        return rootview;
     }
+    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
+        imagesViewModel.init();
+        rvHeadline = view.findViewById(R.id.rvNews);
+
+
+        imagesAdapter = new SearchImageListAdapter(getActivity(), imagesArrayList);
+        rvHeadline.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvHeadline.setAdapter(imagesAdapter);
+        rvHeadline.setNestedScrollingEnabled(true);
+
+        imagesViewModel.getImageRepository().observe(getActivity(), newsResponse -> {
+            List<ImageDescription> images = newsResponse.getImaghes();
+
+            imagesArrayList.addAll(images);
+            Log.e("imagesArrayList", String.valueOf(images.get(0).getImage()));
+            imagesAdapter.notifyDataSetChanged();
+            // Log.e("response", String.valueOf(newsResponse.getImaghes()));
+        });
+
+    }
+
 }
