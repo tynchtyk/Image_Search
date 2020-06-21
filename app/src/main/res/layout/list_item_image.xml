@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/iv_thumb"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="180dp"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
             tools:layout_height="300dp" />

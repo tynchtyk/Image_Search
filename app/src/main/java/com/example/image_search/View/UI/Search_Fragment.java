@@ -99,7 +99,8 @@ public class Search_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootview = inflater.inflate(R.layout.fragment_search, container, false);
-        Toolbar toolbar = rootview.findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("Seach Images");
         setupAdapter();
         setupRecyclerView(rootview);
         return rootview;
@@ -107,44 +108,9 @@ public class Search_Fragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
-        imagesViewModel.init();
-        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), response_data -> {
-
-            imagesAdapter.setImageList(response_data.getImaghes());
-
-        });
-    }
-    private void observeViewModel(SearchImagesViewModel imagesViewModel) {
-        // Update the list when the data changes
+        InitAndObserveModel();
 
     }
-   /* @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        /*imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
-        imagesViewModel.init();
-        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), new Observer<Response_Data>() {
-            @Override
-            public void onChanged(@Nullable Response_Data response_data) {
-
-            }
-        });
-       setupAdapter();
-        setupRecyclerView(view);
-
-
-    }*/
-    public void setupAdapter(){
-        imagesAdapter = new SearchImageListAdapter(getContext(), this, imagesArrayList);
-    }
-
-    public void setupRecyclerView(@NonNull View view){
-        rvHeadline = view.findViewById(R.id.rvNews);
-        rvHeadline.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvHeadline.setAdapter(imagesAdapter);
-        rvHeadline.setNestedScrollingEnabled(true);
-    }
-
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
@@ -158,8 +124,6 @@ public class Search_Fragment extends Fragment {
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setQueryHint("Search images ...");
         searchView.setIconifiedByDefault(false);
-
-
 
         queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
@@ -182,13 +146,28 @@ public class Search_Fragment extends Fragment {
         };
         searchView.setOnQueryTextListener(queryTextListener);
 
-
         super.onCreateOptionsMenu(menu, inflater);
     }
-    private ImageClickCallback imageClickCallback = imageDescription-> {
-        final Bundle bundle = new Bundle();
-        bundle.putString("url", imageDescription.getImage());
 
-        NavHostFragment.findNavController(this).navigate(R.id.action_image_search_to_image_detail3, bundle);
-    };
+    private void InitAndObserveModel() {
+        imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
+        imagesViewModel.init();
+        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), response_data -> {
+
+            imagesAdapter.setImageList(response_data.getImaghes());
+
+        });
+    }
+    public void setupAdapter(){
+        imagesAdapter = new SearchImageListAdapter(getContext(), this, imagesArrayList);
+    }
+
+    public void setupRecyclerView(@NonNull View view){
+        rvHeadline = view.findViewById(R.id.rvNews);
+        rvHeadline.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvHeadline.setAdapter(imagesAdapter);
+        rvHeadline.setNestedScrollingEnabled(true);
+    }
+
+
 }

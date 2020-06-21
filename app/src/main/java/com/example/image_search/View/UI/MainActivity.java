@@ -38,14 +38,5 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }
 
-    /*public void show(ImageDescription imageDescription) {
-        ImageDetail_Fragment projectFragment = ImageDetail_Fragment.forImage(imageDescription.getImage());
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .addToBackStack("project")
-                .replace(R.id.fragment_container,
-                        projectFragment, null).commit();
-    }*/
 
 }

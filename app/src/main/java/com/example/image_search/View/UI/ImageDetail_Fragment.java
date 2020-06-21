@@ -2,8 +2,10 @@ package com.example.image_search.View.UI;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,25 +60,31 @@ public class ImageDetail_Fragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_image_detail, container, false);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("Detail Image");
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24));
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                if(toolbar.getNavigationIcon() != null)
+                    toolbar.setNavigationIcon(null);
+                // Your code
+                NavHostFragment.findNavController(getParentFragment()).navigate(R.id.action_image_detail_to_image_search);
+            }
+        });
         ImageView image_detail = rootview.findViewById(R.id.image);
         // Inflate the layout for this fragment
         Log.e("DETAIL_IMAGE", mParam1);
         Picasso.get().load(mParam1).into(image_detail);
         return rootview;
     }
-    public static ImageDetail_Fragment forImage(String url) {
-        ImageDetail_Fragment fragment = new ImageDetail_Fragment();
-        Bundle args = new Bundle();
 
-        args.putString(ARG_PARAM1, url);
-        fragment.setArguments(args);
-
-        return fragment;
-    }
 }
