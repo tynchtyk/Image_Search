@@ -14,5 +14,20 @@
         android:id="@+id/image_search"
         android:name="com.example.image_search.View.UI.Search_Fragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_image_search_to_image_detail3"
+            app:destination="@id/image_detail" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/image_detail"
+        android:name="com.example.image_search.View.UI.ImageDetail_Fragment"
+        android:label="Image_Detail"
+        tools:layout="@layout/fragment_image_detail" >
+         <argument
+            android:name="url"
+            app:argType="string"/>
+    </fragment>
+
 </navigation>

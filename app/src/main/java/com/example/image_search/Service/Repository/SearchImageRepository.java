@@ -14,6 +14,10 @@ import retrofit2.Response;
 public class SearchImageRepository {
     private ApiInterface searchService;
 
+    private int page_count = 1;
+
+    private int Default_Size = 10;
+
 
     private SearchImageRepository() {
         searchService = ApiFactory.createSearchService();
@@ -34,14 +38,14 @@ public class SearchImageRepository {
 
     public  MutableLiveData<Response_Data> getImages(String query) {
         MutableLiveData<Response_Data> imageData = new MutableLiveData<>();
-        searchService.getSearchImages(query).enqueue(new Callback<Response_Data>() {
+        searchService.getSearchImages(query,page_count,Default_Size).enqueue(new Callback<Response_Data>() {
             @Override
             public void onResponse(Call<Response_Data> call, Response<Response_Data> response) {
                 if (response.isSuccessful()){
 //                    Log.v("SearchImageRepository1:", String.valueOf(response.));
                     imageData.setValue(response.body());
                   //  for(int i=0; i<imageData.s)
-                    Log.e("ImageData", String.valueOf(imageData));
+                    //Log.e("ImageData", String.valueOf(imageData));
                 }
             }
 

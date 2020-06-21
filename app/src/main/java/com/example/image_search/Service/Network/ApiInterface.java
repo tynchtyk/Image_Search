@@ -11,5 +11,7 @@ import retrofit2.http.Query;
 public interface ApiInterface {
     @GET("v2/search/image?")
     Call<Response_Data> getSearchImages(
-            @Query("query") String query);
+            @Query("query") String query,
+            @Query("page") int page,
+            @Query("size") int size);
 }

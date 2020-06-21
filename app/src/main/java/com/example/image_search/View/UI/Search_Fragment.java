@@ -1,24 +1,38 @@
 package com.example.image_search.View.UI;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavDirections;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.image_search.R;
 import com.example.image_search.Service.Model.ImageDescription;
 import com.example.image_search.Service.Model.Response_Data;
 import com.example.image_search.View.Adapters.SearchImageListAdapter;
+import com.example.image_search.View.Callback.ImageClickCallback;
 import com.example.image_search.ViewModel.SearchImagesViewModel;
 
 import java.util.ArrayList;
@@ -42,8 +56,12 @@ public class Search_Fragment extends Fragment {
 
     ArrayList<ImageDescription> imagesArrayList = new ArrayList<>();
     SearchImageListAdapter imagesAdapter;
-    RecyclerView rvHeadline;
     SearchImagesViewModel imagesViewModel;
+    RecyclerView rvHeadline;
+
+    private SearchView searchView = null;
+    private SearchView.OnQueryTextListener queryTextListener;
+
     public Search_Fragment() {
         // Required empty public constructor
     }
@@ -73,6 +91,7 @@ public class Search_Fragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -80,30 +99,96 @@ public class Search_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootview = inflater.inflate(R.layout.fragment_search, container, false);
-
-
+        Toolbar toolbar = rootview.findViewById(R.id.toolbar);
+        setupAdapter();
+        setupRecyclerView(rootview);
         return rootview;
     }
-    @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
         imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
         imagesViewModel.init();
+        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), response_data -> {
+
+            imagesAdapter.setImageList(response_data.getImaghes());
+
+        });
+    }
+    private void observeViewModel(SearchImagesViewModel imagesViewModel) {
+        // Update the list when the data changes
+
+    }
+   /* @Override public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        /*imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
+        imagesViewModel.init();
+        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), new Observer<Response_Data>() {
+            @Override
+            public void onChanged(@Nullable Response_Data response_data) {
+
+            }
+        });
+       setupAdapter();
+        setupRecyclerView(view);
+
+
+    }*/
+    public void setupAdapter(){
+        imagesAdapter = new SearchImageListAdapter(getContext(), this, imagesArrayList);
+    }
+
+    public void setupRecyclerView(@NonNull View view){
         rvHeadline = view.findViewById(R.id.rvNews);
-
-
-        imagesAdapter = new SearchImageListAdapter(getActivity(), imagesArrayList);
         rvHeadline.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvHeadline.setAdapter(imagesAdapter);
         rvHeadline.setNestedScrollingEnabled(true);
-
-        imagesViewModel.getImageRepository().observe(getActivity(), newsResponse -> {
-            List<ImageDescription> images = newsResponse.getImaghes();
-
-            imagesArrayList.addAll(images);
-            Log.e("imagesArrayList", String.valueOf(images.get(0).getImage()));
-            imagesAdapter.notifyDataSetChanged();
-            // Log.e("response", String.valueOf(newsResponse.getImaghes()));
-        });
-
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_search, menu);
+
+        // find searchView
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setQueryHint("Search images ...");
+        searchView.setIconifiedByDefault(false);
+
+
+
+        queryTextListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.e("onQueryTextChange", newText);
+
+                return true;
+            }
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                imagesViewModel.onsubmitQuery(query);
+                imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), response_data -> {
+
+                    imagesAdapter.setImageList(response_data.getImaghes());
+
+                });
+                searchView.clearFocus();
+                return true;
+            }
+        };
+        searchView.setOnQueryTextListener(queryTextListener);
+
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+    private ImageClickCallback imageClickCallback = imageDescription-> {
+        final Bundle bundle = new Bundle();
+        bundle.putString("url", imageDescription.getImage());
+
+        NavHostFragment.findNavController(this).navigate(R.id.action_image_search_to_image_detail3, bundle);
+    };
 }
