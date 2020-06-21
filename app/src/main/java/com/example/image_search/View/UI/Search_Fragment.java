@@ -135,11 +135,6 @@ public class Search_Fragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 imagesViewModel.onsubmitQuery(query);
-                imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), response_data -> {
-
-                    imagesAdapter.setImageList(response_data.getImaghes());
-
-                });
                 searchView.clearFocus();
                 return true;
             }
@@ -151,11 +146,16 @@ public class Search_Fragment extends Fragment {
 
     private void InitAndObserveModel() {
         imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
-        imagesViewModel.init();
-        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), response_data -> {
-
-            imagesAdapter.setImageList(response_data.getImaghes());
-
+        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), new Observer<Response_Data>() {
+            @Override
+            public void onChanged(@Nullable Response_Data response_data) {
+                if (response_data != null) {
+                    imagesAdapter.setImageList(response_data.getImaghes());
+                }
+                else {
+                    Log.e("observerresponse", "NULL");
+                }
+            }
         });
     }
     public void setupAdapter(){

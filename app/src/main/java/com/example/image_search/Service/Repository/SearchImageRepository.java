@@ -2,9 +2,12 @@ package com.example.image_search.Service.Repository;
 
 import android.util.Log;
 
+import com.example.image_search.Service.Model.ImageDescription;
 import com.example.image_search.Service.Model.Response_Data;
 import com.example.image_search.Service.Network.ApiFactory;
 import com.example.image_search.Service.Network.ApiInterface;
+
+import java.util.List;
 
 import androidx.lifecycle.MutableLiveData;
 import retrofit2.Call;
@@ -18,6 +21,7 @@ public class SearchImageRepository {
 
     private int Default_Size = 10;
 
+    MutableLiveData <Response_Data  > imageData = new MutableLiveData <Response_Data> ();
 
     private SearchImageRepository() {
         searchService = ApiFactory.createSearchService();
@@ -36,14 +40,14 @@ public class SearchImageRepository {
         return instance;
     }
 
-    public  MutableLiveData<Response_Data> getImages(String query) {
-        MutableLiveData<Response_Data> imageData = new MutableLiveData<>();
+    public void query(String query) {
+
         searchService.getSearchImages(query,page_count,Default_Size).enqueue(new Callback<Response_Data>() {
             @Override
             public void onResponse(Call<Response_Data> call, Response<Response_Data> response) {
                 if (response.isSuccessful()){
 //                    Log.v("SearchImageRepository1:", String.valueOf(response.));
-                    imageData.setValue(response.body());
+                    imageData.postValue(response.body());
                   //  for(int i=0; i<imageData.s)
                     //Log.e("ImageData", String.valueOf(imageData));
                 }
@@ -52,9 +56,13 @@ public class SearchImageRepository {
             @Override
             public void onFailure(Call<Response_Data> call, Throwable t) {
                 Log.e("SearchImageRepository2:", " NULLLLLLL ");
-                imageData.setValue(null);
+                imageData.postValue(null);
             }
         });
+
+    }
+
+    public  MutableLiveData <Response_Data > getLiveData() {
         return imageData;
     }
 

@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -159,6 +160,9 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
         }*/
         else {
             this.items.clear();
+            if(imagetList == null){
+                Log.e("IMAGELIST", "NULLLFUCKING");
+            }
             this.items.addAll(imagetList);
             notifyDataSetChanged();
         }
