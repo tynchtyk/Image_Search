@@ -1,7 +1,13 @@
 package com.example.image_search.Service.Model;
 
 import com.google.gson.annotations.SerializedName;
+
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 //import androidx.room.PrimaryKey
+@Entity(tableName = "favourites")
+
 public class ImageDescription {
     @SerializedName("display_sitename")
     private String display_sitename;
@@ -24,21 +30,33 @@ public class ImageDescription {
     @SerializedName("width")
     private int width;
 
+    @PrimaryKey
+    private int id;
+
     public String getDisplay_sitename() {
         return display_sitename;
     }
+    public void setDisplay_sitename(String display_sitename) {this.display_sitename = display_sitename;}
 
     public String getImage() { return image; }
+    public void setImage(String image) {this.image = image;}
 
-    public String datetime() { return datetime; }
+    public String getDatetime() { return datetime; }
+    public void setDatetime(String datetime) {this.datetime = datetime;}
 
-    public String doc_url() { return doc_url; }
+    public String getDoc_url(){return thumbnail_url;}
+    public void setDoc_url(String thumbnail_url) {this.thumbnail_url = thumbnail_url;}
 
-    public int height() { return height; }
+    public int getHeight() { return height; }
+    public void setHeight(int height) {this.height = height;}
 
-    public String thumbnail_url() { return thumbnail_url; }
+    public String getThumbnail_url() { return thumbnail_url; }
+    public void setThumbnail_url(String thumbnail_url) {this.thumbnail_url = thumbnail_url;}
 
-    public int width() { return width; }
+    public int getWidth() { return width; }
+    public void setWidth(int width) {this.width = width;}
 
+    public int getId() {return id;}
+    public void setId(int id) {this.id = id;}
 
 }

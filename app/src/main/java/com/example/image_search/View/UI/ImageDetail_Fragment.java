@@ -30,7 +30,7 @@ public class ImageDetail_Fragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private Toolbar toolbar;
     public ImageDetail_Fragment() {
         // Required empty public constructor
     }
@@ -67,7 +67,7 @@ public class ImageDetail_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_image_detail, container, false);
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Detail Image");
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_baseline_arrow_back_24));
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -87,4 +87,10 @@ public class ImageDetail_Fragment extends Fragment {
         return rootview;
     }
 
+    @Override
+    public void onDestroy() {
+        if(toolbar.getNavigationIcon() != null)
+            toolbar.setNavigationIcon(null);
+        super.onDestroy();
+    }
 }

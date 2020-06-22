@@ -51,6 +51,7 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
             this.items = items;
         }
     }
+
     @NonNull
     @Override
     public SearchImageListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -121,9 +122,9 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
                 layoutContent.setVisibility(View.GONE);
             }
 
-
         }
     }
+
     public void setImageList(List< ImageDescription> imagetList) {
         if (this.items == null) {
             this.items = imagetList;

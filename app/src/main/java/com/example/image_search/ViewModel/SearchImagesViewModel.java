@@ -17,19 +17,21 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class SearchImagesViewModel extends ViewModel {
-    private MutableLiveData<Response_Data> mutableLiveData;
+    //private MutableLiveData<Response_Data> mutableLiveData = new MutableLiveData<Response_Data>();
     private SearchImageRepository imageRepository;
 
     public SearchImagesViewModel() {
         imageRepository = SearchImageRepository.getInstance();
-        mutableLiveData = new MutableLiveData<Response_Data>();
     }
+
     public void onsubmitQuery(String query){
-
-        imageRepository.query(query);
+ //       mutableLiveData.postValue(imageRepository.query(query).getValue());
+          imageRepository.query(query);
 
     }
+
     public LiveData<Response_Data> getImageRepository() {
+        //return mutableLiveData;
         return imageRepository.getLiveData();
     }
 }

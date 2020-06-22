@@ -40,7 +40,7 @@ public class SearchImageRepository {
         return instance;
     }
 
-    public void query(String query) {
+    public void  query(String query) {
 
         searchService.getSearchImages(query,page_count,Default_Size).enqueue(new Callback<Response_Data>() {
             @Override
@@ -59,7 +59,7 @@ public class SearchImageRepository {
                 imageData.postValue(null);
             }
         });
-
+       // return imageData;
     }
 
     public  MutableLiveData <Response_Data > getLiveData() {
