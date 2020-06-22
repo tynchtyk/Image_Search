@@ -1,10 +1,8 @@
 package com.example.image_search.View.Adapters;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,37 +11,26 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.example.image_search.R;
 import com.example.image_search.Service.Model.ImageDescription;
-import com.example.image_search.Service.Model.Response_Data;
-import com.example.image_search.View.Callback.ImageClickCallback;
-import com.example.image_search.View.UI.Search_Fragment;
-import com.google.gson.internal.$Gson$Preconditions;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
-
-public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageListAdapter.ViewHolder> {
-    private OnItemClickListener onItemClickListener;
-    private List< ImageDescription> items;
+public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAdapter.ViewHolder>{
+    private List<ImageDescription> items;
     Context context;
     Fragment fragment;
 
-    public SearchImageListAdapter(Context context,Fragment fragment, ArrayList<ImageDescription> items, OnItemClickListener onItemClickListener){
+    public FavouritesListAdapter(Context context,Fragment fragment, ArrayList<ImageDescription> items){
         this.context = context;
         this.fragment = fragment;
         if(items == null) {
@@ -52,42 +39,18 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
         else {
             this.items = items;
         }
-        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
-    public SearchImageListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FavouritesListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_item_image, parent, false);
-        return new ViewHolder(view);
+        return new FavouritesListAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchImageListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull FavouritesListAdapter.ViewHolder holder, int position) {
         holder.onBind(holder.itemView.getContext(), position);
-        holder.ivThumb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Bundle bundle = new Bundle();
-                bundle.putString("url", items.get(position).getImage());
-                AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                NavHostFragment.findNavController(fragment).navigate(R.id.action_image_search_to_image_detail3, bundle);
-            }
-        });
-        holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isChecked) {
-                    holder.toggleButton.setChecked(false);
-                    Log.e("Toggle Button", "false");
-                }
-                else {
-                    holder.toggleButton.setChecked(true);
-                    Log.e("Toggle Button", "true");
-                }
-                onItemClickListener.onItemClick(items.get(position), isChecked);
-            }
-        });
-
     }
 
     @Override
@@ -108,7 +71,18 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
             tvDisplay_SiteName = view.findViewById(R.id.tv_display_sitename);
             layoutContent = view.findViewById(R.id.layout_content);
             toggleButton = view.findViewById(R.id.toggle_button);
-
+            toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked) {
+                        toggleButton.setChecked(false);
+                        Log.e("Toggle Button", "false");
+                    }
+                    else {
+                        toggleButton.setChecked(true);
+                        Log.e("Toggle Button", "true");
+                    }
+                }
+            });
         }
 
         void onBind(Context context, int position) {
@@ -184,8 +158,5 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
             this.items.addAll(imagetList);
             notifyDataSetChanged();
         }
-    }
-    public interface OnItemClickListener {
-        public void onItemClick(ImageDescription imageDescription, boolean isCheked);
     }
 }

@@ -10,7 +10,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-@Database(entities = {ImageDescription.class}, version = 1, exportSchema = false)
+@Database(entities = {ImageDescription.class}, version = 2, exportSchema = false)
 public abstract class FavouritesDataBase extends RoomDatabase {
 
     private static FavouritesDataBase favouritesDataBaseInstance;

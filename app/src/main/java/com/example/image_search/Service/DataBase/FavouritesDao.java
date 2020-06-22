@@ -22,4 +22,7 @@ public interface FavouritesDao {
     @Query("SELECT * FROM favourites")
     LiveData<List<ImageDescription>> getAllFavourites();
 
+    @Query("DELETE FROM favourites")
+    void deleteAllFavourites();
+
 }

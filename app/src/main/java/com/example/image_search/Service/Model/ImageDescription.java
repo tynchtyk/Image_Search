@@ -30,7 +30,7 @@ public class ImageDescription {
     @SerializedName("width")
     private int width;
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
 
     public String getDisplay_sitename() {

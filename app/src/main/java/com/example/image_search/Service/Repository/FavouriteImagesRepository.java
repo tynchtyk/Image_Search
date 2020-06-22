@@ -30,7 +30,9 @@ public class FavouriteImagesRepository {
     public void deleteFavourite(ImageDescription imageDescription) {
         new DeleteNoteAsyncTask(favouritesDao).execute(imageDescription);
     }
-
+    public void deleteAllFavourites(){
+        new DeleteAllAsyncTask(favouritesDao).execute();
+    }
     public LiveData<List<ImageDescription>> getAllFavourites() {
         return allFavourites;
     }
@@ -55,6 +57,17 @@ public class FavouriteImagesRepository {
         @Override
         protected Void doInBackground(ImageDescription... images) {
             noteDao.deleteFavourite(images[0]);
+            return null;
+        }
+    }
+    private static class DeleteAllAsyncTask extends AsyncTask < Void, Void, Void> {
+        private FavouritesDao noteDao;
+        private DeleteAllAsyncTask(FavouritesDao noteDao) {
+            this.noteDao = noteDao;
+        }
+        @Override
+        protected Void doInBackground(Void... images) {
+            noteDao.deleteAllFavourites();
             return null;
         }
     }

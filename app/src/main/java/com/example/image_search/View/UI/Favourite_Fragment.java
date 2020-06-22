@@ -2,14 +2,30 @@ package com.example.image_search.View.UI;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.image_search.R;
+import com.example.image_search.Service.Model.ImageDescription;
+import com.example.image_search.Service.Model.Response_Data;
+import com.example.image_search.View.Adapters.FavouritesListAdapter;
+import com.example.image_search.View.Adapters.SearchImageListAdapter;
+import com.example.image_search.ViewModel.FavouritesViewModel;
+import com.example.image_search.ViewModel.SearchImagesViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +46,10 @@ public class Favourite_Fragment extends Fragment {
     public Favourite_Fragment() {
         // Required empty public constructor
     }
-
+    ArrayList<ImageDescription> favouriteArrayList = new ArrayList<>();
+    FavouritesListAdapter favouriteAdapter;
+    FavouritesViewModel favouriteViewModel;
+    RecyclerView rvHeadline;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -62,8 +81,41 @@ public class Favourite_Fragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View rootview = inflater.inflate(R.layout.fragment_favourite, container, false);
         Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
         toolbar.setTitle("Favourite Image");
-        return inflater.inflate(R.layout.fragment_favourite, container, false);
+        setupAdapter();
+        setupRecyclerView(rootview);
+        return rootview;
+    }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        InitAndObserveModel();
+
+    }
+    private void InitAndObserveModel() {
+        favouriteViewModel = ViewModelProviders.of(requireActivity()).get(FavouritesViewModel.class);
+        favouriteViewModel.getAllFavourites().observe(getViewLifecycleOwner(), new Observer<List<ImageDescription>>() {
+            @Override
+            public void onChanged(@Nullable List<ImageDescription> favourites) {
+                if (favourites != null) {
+                    favouriteAdapter.setImageList(favourites);
+                }
+                else {
+                    Log.e("observerresponse", "NULL");
+                }
+            }
+        });
+    }
+    public void setupAdapter(){
+        favouriteAdapter = new FavouritesListAdapter(getContext(), this, favouriteArrayList);
+    }
+
+    public void setupRecyclerView(@NonNull View view){
+        rvHeadline = view.findViewById(R.id.recycleView);
+        rvHeadline.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvHeadline.setAdapter(favouriteAdapter);
+        rvHeadline.setNestedScrollingEnabled(true);
     }
 }

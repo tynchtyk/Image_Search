@@ -27,12 +27,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 
 import com.example.image_search.R;
 import com.example.image_search.Service.Model.ImageDescription;
 import com.example.image_search.Service.Model.Response_Data;
 import com.example.image_search.View.Adapters.SearchImageListAdapter;
 import com.example.image_search.View.Callback.ImageClickCallback;
+import com.example.image_search.ViewModel.FavouritesViewModel;
 import com.example.image_search.ViewModel.SearchImagesViewModel;
 
 import java.util.ArrayList;
@@ -57,10 +59,14 @@ public class Search_Fragment extends Fragment {
     ArrayList<ImageDescription> imagesArrayList = new ArrayList<>();
     SearchImageListAdapter imagesAdapter;
     SearchImagesViewModel imagesViewModel;
+    FavouritesViewModel favouritesViewModel;
     RecyclerView rvHeadline;
 
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
+
+    private SearchImageListAdapter.OnItemClickListener searchAdapterInterface;
+
 
     public Search_Fragment() {
         // Required empty public constructor
@@ -145,6 +151,7 @@ public class Search_Fragment extends Fragment {
     }
 
     private void InitAndObserveModel() {
+        favouritesViewModel = ViewModelProviders.of(requireActivity()).get(FavouritesViewModel.class);
         imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
         imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), new Observer<Response_Data>() {
             @Override
@@ -159,7 +166,16 @@ public class Search_Fragment extends Fragment {
         });
     }
     public void setupAdapter(){
-        imagesAdapter = new SearchImageListAdapter(getContext(), this, imagesArrayList);
+        searchAdapterInterface = new SearchImageListAdapter.OnItemClickListener(){
+            @Override
+            public void onItemClick(ImageDescription imageDescription, boolean isCheked) {
+                if(isCheked)
+                    favouritesViewModel.insert(imageDescription);
+                else
+                    favouritesViewModel.delete(imageDescription);
+            }
+        };
+        imagesAdapter = new SearchImageListAdapter(getContext(), this, imagesArrayList, searchAdapterInterface);
     }
 
     public void setupRecyclerView(@NonNull View view){
@@ -168,6 +184,5 @@ public class Search_Fragment extends Fragment {
         rvHeadline.setAdapter(imagesAdapter);
         rvHeadline.setNestedScrollingEnabled(true);
     }
-
 
 }
