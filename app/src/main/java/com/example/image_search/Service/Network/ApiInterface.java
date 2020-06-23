@@ -1,8 +1,6 @@
 package com.example.image_search.Service.Network;
 
-import com.example.image_search.Service.Model.Response_Data;
-
-import java.util.List;
+import com.example.image_search.Service.Entity.Response_Data;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -1,16 +1,10 @@
 package com.example.image_search.Service.Network;
 
 
-import android.util.Log;
-
 import com.example.image_search.BuildConfig;
-import com.example.image_search.Service.Model.Response_Data;
 
 import java.io.IOException;
-import java.util.List;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

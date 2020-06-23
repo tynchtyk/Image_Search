@@ -1,4 +1,4 @@
-package com.example.image_search.Service.Model;
+package com.example.image_search.Service.Entity;
 
 import com.google.gson.annotations.SerializedName;
 

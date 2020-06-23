@@ -2,20 +2,15 @@ package com.example.image_search.View.UI;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavDirections;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,14 +21,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 
 import com.example.image_search.R;
-import com.example.image_search.Service.Model.ImageDescription;
-import com.example.image_search.Service.Model.Response_Data;
+import com.example.image_search.Service.Entity.ImageDescription;
+import com.example.image_search.Service.Entity.Response_Data;
 import com.example.image_search.View.Adapters.SearchImageListAdapter;
-import com.example.image_search.View.Callback.ImageClickCallback;
 import com.example.image_search.ViewModel.FavouritesViewModel;
 import com.example.image_search.ViewModel.SearchImagesViewModel;
 
@@ -59,7 +51,6 @@ public class Search_Fragment extends Fragment {
     ArrayList<ImageDescription> imagesArrayList = new ArrayList<>();
     SearchImageListAdapter imagesAdapter;
     SearchImagesViewModel imagesViewModel;
-    FavouritesViewModel favouritesViewModel;
     RecyclerView rvHeadline;
 
     private SearchView searchView = null;
@@ -135,7 +126,6 @@ public class Search_Fragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.e("onQueryTextChange", newText);
-
                 return true;
             }
             @Override
@@ -151,13 +141,12 @@ public class Search_Fragment extends Fragment {
     }
 
     private void InitAndObserveModel() {
-        favouritesViewModel = ViewModelProviders.of(requireActivity()).get(FavouritesViewModel.class);
         imagesViewModel = ViewModelProviders.of(requireActivity()).get(SearchImagesViewModel.class);
-        imagesViewModel.getImageRepository().observe(getViewLifecycleOwner(), new Observer<Response_Data>() {
+        imagesViewModel.liveQueryImages().observe(getViewLifecycleOwner(), new Observer<List<ImageDescription>>() {
             @Override
-            public void onChanged(@Nullable Response_Data response_data) {
+            public void onChanged(@Nullable List<ImageDescription> response_data) {
                 if (response_data != null) {
-                    imagesAdapter.setImageList(response_data.getImaghes());
+                    imagesAdapter.setImageList(response_data);
                 }
                 else {
                     Log.e("observerresponse", "NULL");
@@ -168,11 +157,8 @@ public class Search_Fragment extends Fragment {
     public void setupAdapter(){
         searchAdapterInterface = new SearchImageListAdapter.OnItemClickListener(){
             @Override
-            public void onItemClick(ImageDescription imageDescription, boolean isCheked) {
-                if(isCheked)
-                    favouritesViewModel.insert(imageDescription);
-                else
-                    favouritesViewModel.delete(imageDescription);
+            public void onItemClick(ImageDescription imageDescription) {
+                imagesViewModel.onToggleClicked(imageDescription);
             }
         };
         imagesAdapter = new SearchImageListAdapter(getContext(), this, imagesArrayList, searchAdapterInterface);

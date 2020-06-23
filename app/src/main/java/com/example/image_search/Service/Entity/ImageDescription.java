@@ -1,7 +1,8 @@
-package com.example.image_search.Service.Model;
+package com.example.image_search.Service.Entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -30,8 +31,10 @@ public class ImageDescription {
     @SerializedName("width")
     private int width;
 
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey @NonNull
+    private String id;
+
+    private boolean isFavourite;
 
     public String getDisplay_sitename() {
         return display_sitename;
@@ -56,7 +59,9 @@ public class ImageDescription {
     public int getWidth() { return width; }
     public void setWidth(int width) {this.width = width;}
 
-    public int getId() {return id;}
-    public void setId(int id) {this.id = id;}
+    public String getId() {return id;}
+    public void setId(String id) {this.id = id;}
 
+    public boolean getIsFavourite(){return this.isFavourite;}
+    public void setIsFavourite(boolean isFavourite) {this.isFavourite = isFavourite;}
 }

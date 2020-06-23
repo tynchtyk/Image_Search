@@ -1,26 +1,32 @@
-package com.example.image_search.Service.Repository;
+package com.example.image_search.Service.DataBase;
 
 import android.app.Application;
 import android.os.AsyncTask;
 
 import com.example.image_search.Service.DataBase.FavouritesDao;
 import com.example.image_search.Service.DataBase.FavouritesDataBase;
-import com.example.image_search.Service.Model.ImageDescription;
+import com.example.image_search.Service.Entity.ImageDescription;
 
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
 
-public class FavouriteImagesRepository {
+public class DataBaseConnector {
 
     private FavouritesDao favouritesDao;
 
     private LiveData<List<ImageDescription>> allFavourites;
-
-    public FavouriteImagesRepository(Application application) {
+    private static DataBaseConnector instance;
+    public DataBaseConnector(Application application) {
         FavouritesDataBase database = FavouritesDataBase.getInstance(application);
         favouritesDao = database.favouritesDao();
         allFavourites = favouritesDao.getAllFavourites();
+    }
+    public static DataBaseConnector getInstance(Application application){
+        if(instance == null) {
+            instance = new DataBaseConnector(application);
+        }
+        return instance;
     }
 
     public void insertFavourite(ImageDescription imageDescription) {
@@ -33,6 +39,7 @@ public class FavouriteImagesRepository {
     public void deleteAllFavourites(){
         new DeleteAllAsyncTask(favouritesDao).execute();
     }
+
     public LiveData<List<ImageDescription>> getAllFavourites() {
         return allFavourites;
     }

@@ -2,33 +2,27 @@ package com.example.image_search.ViewModel;
 
 import android.app.Application;
 
-import com.example.image_search.Service.Model.ImageDescription;
-import com.example.image_search.Service.Repository.FavouriteImagesRepository;
+import com.example.image_search.Service.Entity.ImageDescription;
+import com.example.image_search.Service.DataBase.DataBaseConnector;
+import com.example.image_search.Service.Repository.QueryRepository;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
 public class FavouritesViewModel extends AndroidViewModel {
-    private FavouriteImagesRepository repository;
-    private LiveData<List<ImageDescription>> allFavouriteImages;
+    private QueryRepository queryRepository;
     public FavouritesViewModel(@NonNull Application application) {
         super(application);
-        repository = new FavouriteImagesRepository(application);
-        allFavouriteImages = repository.getAllFavourites();
+        queryRepository = QueryRepository.getInstance(application);
     }
-    public void insert(ImageDescription note) {
-        repository.insertFavourite(note);
+    public void onToggleClicked(ImageDescription imageDescription){
+            queryRepository.deleteFavourite(imageDescription);
     }
-    public void delete(ImageDescription note) {
-        repository.deleteFavourite(note);
-    }
-    public void deleteAll(){repository.deleteAllFavourites();}
 
     public LiveData<List<ImageDescription>> getAllFavourites() {
-        return allFavouriteImages;
+        return queryRepository.getAllFavourites();
     }
 }

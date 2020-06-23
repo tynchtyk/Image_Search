@@ -1,10 +1,8 @@
 package com.example.image_search.View.Adapters;
 
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,26 +11,18 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.example.image_search.R;
-import com.example.image_search.Service.Model.ImageDescription;
-import com.example.image_search.Service.Model.Response_Data;
-import com.example.image_search.View.Callback.ImageClickCallback;
-import com.example.image_search.View.UI.Search_Fragment;
-import com.google.gson.internal.$Gson$Preconditions;
+import com.example.image_search.Service.Entity.ImageDescription;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
@@ -74,19 +64,16 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
                 NavHostFragment.findNavController(fragment).navigate(R.id.action_image_search_to_image_detail3, bundle);
             }
         });
-        holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(!isChecked) {
-                    holder.toggleButton.setChecked(false);
-                    Log.e("Toggle Button", "false");
-                }
-                else {
-                    holder.toggleButton.setChecked(true);
-                    Log.e("Toggle Button", "true");
-                }
-                onItemClickListener.onItemClick(items.get(position), isChecked);
+        holder.toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(items.get(position));
             }
         });
+        if(items.get(position).getIsFavourite() == false)
+            holder.toggleButton.setImageResource(R.drawable.ic_favourite_border);
+        else
+            holder.toggleButton.setImageResource(R.drawable.ic_favourite);
 
     }
 
@@ -99,7 +86,7 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
         View layoutContent;
         TextView tvDisplay_SiteName;
         ImageView ivThumb;
-        Switch toggleButton;
+        ImageView toggleButton;
 
         ViewHolder(@NonNull View view) {
             super(view);
@@ -186,6 +173,6 @@ public class SearchImageListAdapter extends RecyclerView.Adapter<SearchImageList
         }
     }
     public interface OnItemClickListener {
-        public void onItemClick(ImageDescription imageDescription, boolean isCheked);
+        public void onItemClick(ImageDescription imageDescription);
     }
 }

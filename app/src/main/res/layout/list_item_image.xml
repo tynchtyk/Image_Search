@@ -40,14 +40,15 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 tools:text="news" />
-            <Switch
+            <ImageView
                 android:gravity="right"
                 android:layout_weight="0.5"
                 android:id="@+id/toggle_button"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_favourite_border">
 
-            </Switch>
+            </ImageView>
 
         </LinearLayout>
 

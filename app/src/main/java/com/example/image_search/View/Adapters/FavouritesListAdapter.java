@@ -1,7 +1,6 @@
 package com.example.image_search.View.Adapters;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,24 +12,23 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.example.image_search.R;
-import com.example.image_search.Service.Model.ImageDescription;
+import com.example.image_search.Service.Entity.ImageDescription;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAdapter.ViewHolder>{
+    private OnItemClickListener onItemClickListener;
     private List<ImageDescription> items;
     Context context;
     Fragment fragment;
 
-    public FavouritesListAdapter(Context context,Fragment fragment, ArrayList<ImageDescription> items){
+    public FavouritesListAdapter(Context context,Fragment fragment, ArrayList<ImageDescription> items, OnItemClickListener onItemClickListener){
         this.context = context;
         this.fragment = fragment;
         if(items == null) {
@@ -39,6 +37,7 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
         else {
             this.items = items;
         }
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -51,6 +50,17 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
     @Override
     public void onBindViewHolder(@NonNull FavouritesListAdapter.ViewHolder holder, int position) {
         holder.onBind(holder.itemView.getContext(), position);
+        holder.toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(items.get(position));
+            }
+        });
+        if(items.get(position).getIsFavourite() == false)
+            holder.toggleButton.setImageResource(R.drawable.ic_favourite_border);
+        else
+            holder.toggleButton.setImageResource(R.drawable.ic_favourite);
+
     }
 
     @Override
@@ -62,7 +72,7 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
         View layoutContent;
         TextView tvDisplay_SiteName;
         ImageView ivThumb;
-        Switch toggleButton;
+        ImageView toggleButton;
 
         ViewHolder(@NonNull View view) {
             super(view);
@@ -71,18 +81,7 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
             tvDisplay_SiteName = view.findViewById(R.id.tv_display_sitename);
             layoutContent = view.findViewById(R.id.layout_content);
             toggleButton = view.findViewById(R.id.toggle_button);
-            toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if(isChecked) {
-                        toggleButton.setChecked(false);
-                        Log.e("Toggle Button", "false");
-                    }
-                    else {
-                        toggleButton.setChecked(true);
-                        Log.e("Toggle Button", "true");
-                    }
-                }
-            });
+
         }
 
         void onBind(Context context, int position) {
@@ -158,5 +157,8 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
             this.items.addAll(imagetList);
             notifyDataSetChanged();
         }
+    }
+    public interface OnItemClickListener {
+        public void onItemClick(ImageDescription imageDescription);
     }
 }

@@ -1,37 +1,43 @@
 package com.example.image_search.ViewModel;
 
 import android.app.Application;
-import android.os.AsyncTask;
-import android.util.Log;
 
-import com.example.image_search.Service.Model.ImageDescription;
-import com.example.image_search.Service.Model.Response_Data;
-import com.example.image_search.Service.Repository.SearchImageRepository;
+import com.example.image_search.Service.Entity.ImageDescription;
+import com.example.image_search.Service.Entity.Response_Data;
+import com.example.image_search.Service.Network.NetworkConnector;
+import com.example.image_search.Service.Repository.QueryRepository;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SearchImagesViewModel extends ViewModel {
+public class SearchImagesViewModel extends AndroidViewModel {
     //private MutableLiveData<Response_Data> mutableLiveData = new MutableLiveData<Response_Data>();
-    private SearchImageRepository imageRepository;
+    private QueryRepository queryRepository;
 
-    public SearchImagesViewModel() {
-        imageRepository = SearchImageRepository.getInstance();
+    public SearchImagesViewModel(@NonNull Application application) {
+        super(application);
+        queryRepository = QueryRepository.getInstance(application);
     }
 
     public void onsubmitQuery(String query){
  //       mutableLiveData.postValue(imageRepository.query(query).getValue());
-          imageRepository.query(query);
+        queryRepository.NewQuery(query);
 
     }
-
-    public LiveData<Response_Data> getImageRepository() {
+    public void onToggleClicked(ImageDescription imageDescription){
+        if(imageDescription.getIsFavourite()) {
+            queryRepository.deleteFavourite(imageDescription);
+        }
+        else {
+            queryRepository.insertFavourite(imageDescription);
+        }
+    }
+    public LiveData<List<ImageDescription>> liveQueryImages() {
         //return mutableLiveData;
-        return imageRepository.getLiveData();
+        return queryRepository.getQueryImages();
     }
 }

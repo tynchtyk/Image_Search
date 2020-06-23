@@ -1,6 +1,6 @@
 package com.example.image_search.Service.DataBase;
 
-import com.example.image_search.Service.Model.ImageDescription;
+import com.example.image_search.Service.Entity.ImageDescription;
 
 import java.util.List;
 

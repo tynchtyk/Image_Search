@@ -2,7 +2,7 @@ package com.example.image_search.Service.DataBase;
 
 import android.content.Context;
 
-import com.example.image_search.Service.Model.ImageDescription;
+import com.example.image_search.Service.Entity.ImageDescription;
 
 import androidx.annotation.NonNull;
 import androidx.room.Database;

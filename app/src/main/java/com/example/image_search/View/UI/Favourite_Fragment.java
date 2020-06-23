@@ -17,12 +17,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.image_search.R;
-import com.example.image_search.Service.Model.ImageDescription;
-import com.example.image_search.Service.Model.Response_Data;
+import com.example.image_search.Service.Entity.ImageDescription;
 import com.example.image_search.View.Adapters.FavouritesListAdapter;
 import com.example.image_search.View.Adapters.SearchImageListAdapter;
 import com.example.image_search.ViewModel.FavouritesViewModel;
-import com.example.image_search.ViewModel.SearchImagesViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +48,8 @@ public class Favourite_Fragment extends Fragment {
     FavouritesListAdapter favouriteAdapter;
     FavouritesViewModel favouriteViewModel;
     RecyclerView rvHeadline;
+
+    private FavouritesListAdapter.OnItemClickListener favouriteAdapterInterface;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -109,7 +109,13 @@ public class Favourite_Fragment extends Fragment {
         });
     }
     public void setupAdapter(){
-        favouriteAdapter = new FavouritesListAdapter(getContext(), this, favouriteArrayList);
+        favouriteAdapterInterface = new FavouritesListAdapter.OnItemClickListener(){
+            @Override
+            public void onItemClick(ImageDescription imageDescription) {
+                favouriteViewModel.onToggleClicked(imageDescription);
+            }
+        };
+        favouriteAdapter = new FavouritesListAdapter(getContext(), this, favouriteArrayList, favouriteAdapterInterface );
     }
 
     public void setupRecyclerView(@NonNull View view){
