@@ -20,6 +20,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAdapter.ViewHolder>{
@@ -120,11 +121,11 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
             this.items = imagetList;
             notifyDataSetChanged();
         }
-        /*else {
+        else {
             DiffUtil.DiffResult result = DiffUtil.calculateDiff(new DiffUtil.Callback() {
                 @Override
                 public int getOldListSize() {
-                    return SearchImageListAdapter.this.items.size();
+                    return FavouritesListAdapter.this.items.size();
                 }
 
                 @Override
@@ -134,21 +135,30 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
 
                 @Override
                 public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                    return false;
+                    return FavouritesListAdapter.this.items.get(oldItemPosition).getId().equals(
+                            items.get(newItemPosition).getId()
+                    );
                 }
 
 
                 @Override
                 public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                    ImageDescription project = items.get(newItemPosition);
-                    ImageDescription old = items.get(oldItemPosition);
-                    return project.getImage() == old.id
-                            && Objects.equals(project.git_url, old.git_url);
+                    ImageDescription newItem = items.get(newItemPosition);
+                    ImageDescription oldItem = items.get(oldItemPosition);
+                    return oldItem.getIsFavourite() == newItem.getIsFavourite() &&
+                            oldItem.getHeight() == newItem.getHeight() &&
+                            oldItem.getWidth() == newItem.getWidth() &&
+                            oldItem.getThumbnail_url().compareTo(newItem.getThumbnail_url()) == 0 &&
+                            oldItem.getImage().compareTo(newItem.getImage()) == 0 &&
+                            oldItem.getDatetime().compareTo(newItem.getDatetime()) == 0 &&
+                            oldItem.getDisplay_sitename().compareTo(newItem.getDisplay_sitename()) == 0 &&
+                            oldItem.getId().compareTo(newItem.getId()) == 0;
                 }
             });
-            this.projectList = projectList;
+            this.items = imagetList;
             result.dispatchUpdatesTo(this);
-        }*/
+            notifyDataSetChanged();
+        }/*
         else {
             this.items.clear();
             if(imagetList == null){
@@ -156,7 +166,7 @@ public class FavouritesListAdapter extends RecyclerView.Adapter<FavouritesListAd
             }
             this.items.addAll(imagetList);
             notifyDataSetChanged();
-        }
+        }*/
     }
     public interface OnItemClickListener {
         public void onItemClick(ImageDescription imageDescription);

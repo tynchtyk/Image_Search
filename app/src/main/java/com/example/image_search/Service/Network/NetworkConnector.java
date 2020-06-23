@@ -19,7 +19,7 @@ public class NetworkConnector {
 
     private int page_count = 1;
 
-    private int Default_Size = 10;
+    private int Default_Size = 40;
 
     MutableLiveData<List< ImageDescription >> liveQueryResponse;
 
