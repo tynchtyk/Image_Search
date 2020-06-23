@@ -3,13 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/image_search">
+    app:startDestination="@id/image_favorite">
 
-    <fragment
-        android:id="@+id/image_favorite"
-        android:name="com.example.image_search.View.UI.Favourite_Fragment"
-        android:label="Favorites"
-        tools:layout="@layout/fragment_favourite" />
     <fragment
         android:id="@+id/image_search"
         android:name="com.example.image_search.View.UI.Search_Fragment"
@@ -19,6 +14,12 @@
             android:id="@+id/action_image_search_to_image_detail3"
             app:destination="@id/image_detail" />
     </fragment>
+
+    <fragment
+        android:id="@+id/image_favorite"
+        android:name="com.example.image_search.View.UI.Favourite_Fragment"
+        android:label="Favorites"
+        tools:layout="@layout/fragment_favourite" />
 
     <fragment
         android:id="@+id/image_detail"
