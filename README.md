@@ -6,7 +6,5 @@ It loads images from the Internet and stores them (favorites) in a local databas
 
 1. Retrofit
 2. Room
-3. Coroutines
-4. Kodein
 5. Gson
 6. Picasso
